@@ -1,0 +1,7 @@
+
+group = 'io.qzz.tbsciencehubproject'
+version = '0.0.1-SNAPSHOT'
+description = 'ScienceHub'
+tasks.withType(JavaCompile) {
+    options.compilerArgs += "--enable-preview"
+}

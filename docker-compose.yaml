@@ -1,0 +1,54 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: sciencehub-db
+    environment:
+      POSTGRES_DB: sciencehub
+      POSTGRES_USER: sciencehub_user
+      POSTGRES_PASSWORD: sciencehub_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sciencehub_user -d sciencehub"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: .
+    container_name: sciencehub-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_ADDRESS: db
+      DB_PORT: 5432
+      DB_NAME: sciencehub
+      DB_USER: sciencehub_user
+      DB_PASSWORD: sciencehub_pass
+      FLYWAY_USER: sciencehub_user
+      FLYWAY_PASSWORD: sciencehub_pass
+      SERVER_PORT: 8080
+    ports:
+      - "8081:8080"         # Changed host port to 8081
+    restart: unless-stopped
+
+  frontend:
+    image: node:20-alpine
+    container_name: sciencehub-frontend
+    working_dir: /app
+    volumes:
+      - ./sciencehub-ui:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_API_BASE_URL: http://localhost:8081   # Updated to match backend host port
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

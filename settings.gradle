@@ -1,0 +1,11 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+rootProject.name = 'sciencehub'
+
+include 'app'
+include 'pipeline'
+include 'articles-pipeline'

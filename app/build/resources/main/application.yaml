@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: ScienceHub
+  config:
+    import: optional:configtree:/run/secrets/
+  datasource:
+    url: jdbc:postgresql://${DB_ADDRESS:db}:${DB_PORT:5432}/${DB_NAME:sciencehub}
+    username: ${DB_USER:sciencehub_user}
+    password: ${DB_PASSWORD:sciencehub_pass}
+  flyway:
+    url: jdbc:postgresql://${DB_ADDRESS:db}:${DB_PORT:5432}/${DB_NAME:sciencehub}
+    user: ${FLYWAY_USER:sciencehub_user}
+    password: ${FLYWAY_PASSWORD:sciencehub_pass}
